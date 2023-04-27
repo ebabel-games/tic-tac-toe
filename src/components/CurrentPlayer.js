@@ -1,12 +1,8 @@
-import { useContext } from "react";
-import PlayerContext from "../PlayerContext";
 import './CurrentPlayer.css';
 
-function CurrentPlayer() {
-  const context = useContext(PlayerContext);
-
+function CurrentPlayer({ currentPlayer }) {
   return (
-    <p className="current-player">Current Player: {context.currentPlayer}</p>
+    <p className="current-player">Current Player: {currentPlayer}</p>
   )
 }
 
