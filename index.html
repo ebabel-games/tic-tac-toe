@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    #board {
+      display: grid;
+      grid-template-rows: 100px 100px 100px;
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+      width: 301px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 100px 100px 100px;
+    }
+
+    .square {
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+      height: 100px;
+      width: 100px;
+      font-size: 50px;
+      text-align: center;
+      line-height: 100px;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <p>Play a javascript game of Tic Tac Toe against your computer.</p>
+  <div id="board"></div>
+  
+  <script>
+    var board = [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null]
+    ];
+
+    var player = 'X';
+    var computer = 'O';
+
+    var currentPlayer = player;
+
+    var checkForWinner = function() {
+      // check rows
+      for (var i = 0; i < board.length; i++) {
+        var row = board[i];
+        var rowString = row.join('');
+        if (rowString === 'XXX') {
+          return 'X';
+        } else if (rowString === 'OOO') {
+          return 'O';
+        }
+      }
+
+      // check columns
+      for (var i = 0; i < board.length; i++) {
+        var column = [board[0][i], board[1][i], board[2][i]];
+        var columnString = column.join('');
+        if (columnString === 'XXX') {
+          return 'X';
+        } else if (columnString === 'OOO') {
+          return 'O';
+        }
+      }
+
+      // check diagonals
+      var diagonal1 = [board[0][0], board[1][1], board[2][2]];
+      var diagonal1String = diagonal1.join('');
+      if (diagonal1String === 'XXX') {
+        return 'X';
+      } else if (diagonal1String === 'OOO') {
+        return 'O';
+      }
+
+      var diagonal2 = [board[0][2], board[1][1], board[2][0]];
+      var diagonal2String = diagonal2.join('');
+      if (diagonal2String === 'XXX') {
+        return 'X';
+      } else if (diagonal2String === 'OOO') {
+        return 'O';
+      }
+
+      return null;
+    };
+
+    var computerMove = function() {
+      // check if computer can win
+      for (var i = 0; i < board.length; i++) {
+        var row = board[i];
+        for (var j = 0; j < row.length; j++) {
+          if (row[j] === null) {
+            row[j] = computer;
+            if (checkForWinner() === computer) {
+              return;
+            } else {
+              row[j] = null;
+            }
+          }
+        }
+      }
+
+      // check if player can win
+      for (var i = 0; i < board.length; i++) {
+        var row = board[i];
+        for (var j = 0; j < row.length; j++) {
+          if (row[j] === null) {
+            row[j] = player;
+            if (checkForWinner() === player) {
+              row[j] = computer;
+              return;
+            } else {
+              row[j] = null;
+            }
+          }
+        }
+      }
+
+      // check if center is available
+      if (board[1][1] === null) {
+        board[1][1] = computer;
+        return;
+      }
+
+      // check if corner is available
+      if (board[0][0] === null) {
+        board[0][0] = computer;
+        return;
+      }
+
+      // check if side is available
+      if (board[0][1] === null) {
+        board[0][1] = computer;
+        return;
+      }
+    };
+
+    var handleClick = function(event) {
+      var square = event.target;
+      var rowIndex = square.parentElement.dataset.row;
+      var columnIndex = square.dataset.column;
+
+      if (board[rowIndex][columnIndex] === null) {
+        board[rowIndex][columnIndex] = currentPlayer;
+        currentPlayer = currentPlayer === player ? computer : player;
+        computerMove();
+        render();
+      }
+
+      var winner = checkForWinner();
+      if (winner !== null) {
+        alert(winner + ' wins!');
+      }
+    };
+
+    var render = function() {
+      var boardElement = document.getElementById('board');
+      boardElement.innerHTML = '';
+
+      for (var i = 0; i < board.length; i++) {
+        var row = board[i];
+        var rowElement = document.createElement('div');
+        rowElement.className = 'row';
+
+        for (var j = 0; j < row.length; j++) {
+          var square = row[j];
+          var squareElement = document.createElement('div');
+          squareElement.className = 'square';
+          squareElement.innerHTML = square;
+          rowElement.appendChild(squareElement);
+
+          squareElement.addEventListener('click', handleClick);
+        }
+
+        boardElement.appendChild(rowElement);
+      }
+    };
+
+    render();
+
+  </script>
+</body>
+</html>
